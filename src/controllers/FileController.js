@@ -7,12 +7,14 @@ class FileController {
 
         const file = await File.create({
             title: req.file.originalname,
-            path: req.file.key,
+            path: req.file.key
         });
 
-        box.files.push(File);
+        box.files.push(file);
 
         await box.save();
+
+        req.io.sockets.in(box._id).emit("file", file);
 
         return res.json(file);
     }
